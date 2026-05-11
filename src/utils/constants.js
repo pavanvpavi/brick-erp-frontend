@@ -1,4 +1,5 @@
-export const API_BASE_URL = "http://localhost:8080/api/v1";
+// export const API_BASE_URL = "http://localhost:8080/api/v1";
+export const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const ORDER_STATUS_COLORS = {
   DRAFT: "badge-gray",
