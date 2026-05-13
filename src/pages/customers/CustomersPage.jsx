@@ -146,8 +146,9 @@ export default function CustomersPage() {
                           <Eye size={16} />
                         </button>
                         <button
-                          onClick={() => {
-                            setEditCustomer(c);
+                          onClick={async () => {
+                            const r = await customerApi.getById(c.id);
+                            setEditCustomer(r.data.data);
                             setShowForm(true);
                           }}
                           className="text-gray-400 hover:text-amber-600"

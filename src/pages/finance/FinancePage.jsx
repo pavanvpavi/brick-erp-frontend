@@ -44,15 +44,25 @@ export default function FinancePage() {
 
   useEffect(() => {
     fetchInvoices();
-    orderApi
-      .getAll()
-      .then((r) =>
-        setOrders(
-          r.data.data.filter(
-            (o) => o.status !== "DRAFT" && o.status !== "CANCELLED",
-          ),
-        ),
+    const loadOrders = async () => {
+      const [ordersRes, invoicesRes] = await Promise.all([
+        orderApi.getAll(),
+        financeApi.getAll(),
+      ]);
+      const invoicedOrderIds = new Set(
+        invoicesRes.data.data
+          .filter((inv) => inv.status !== "CANCELLED")
+          .map((inv) => inv.salesOrderId),
       );
+      const eligibleOrders = ordersRes.data.data.filter(
+        (o) =>
+          o.status !== "DRAFT" &&
+          o.status !== "CANCELLED" &&
+          !invoicedOrderIds.has(o.id),
+      );
+      setOrders(eligibleOrders);
+    };
+    loadOrders();
   }, []);
 
   const handleCreate = async (e) => {
