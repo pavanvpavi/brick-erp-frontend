@@ -16,12 +16,32 @@ import {
   FlaskConical,
   DollarSign,
 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  Warehouse,
+  Users,
+  ShoppingCart,
+  Truck,
+  Factory,
+  Receipt,
+  UserCog,
+  LogOut,
+  Bike,
+  FlaskConical,
+  DollarSign,
+  ArrowLeftRight,
+  BookOpen,
+  BarChart2,
+} from "lucide-react";
 
 const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/products", icon: Package, label: "Products" },
   { to: "/inventory", icon: Warehouse, label: "Inventory" },
+  { to: "/transfer", icon: ArrowLeftRight, label: "Stock Transfer" },
   { to: "/customers", icon: Users, label: "Customers" },
+  { to: "/ledger", icon: BookOpen, label: "Customer Ledger" },
   { to: "/orders", icon: ShoppingCart, label: "Sales Orders" },
   { to: "/procurement", icon: Truck, label: "Procurement" },
   { to: "/manufacturing", icon: Factory, label: "Manufacturing" },
@@ -29,6 +49,7 @@ const navItems = [
   { to: "/dispatch", icon: Bike, label: "Dispatch" },
   { to: "/finance", icon: Receipt, label: "Finance" },
   { to: "/expenses", icon: DollarSign, label: "Expenses" },
+  { to: "/reports/gst", icon: BarChart2, label: "GST Report" },
   { to: "/users", icon: UserCog, label: "Users" },
 ];
 

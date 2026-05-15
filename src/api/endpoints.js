@@ -135,3 +135,33 @@ export const expenseApi = {
   getTotal: (start, end) =>
     api.get(`/expenses/total?start=${start}&end=${end}`),
 };
+
+// Stock Transfer
+export const stockTransferApi = {
+  getAll: () => api.get("/stock-transfers"),
+  getById: (id) => api.get(`/stock-transfers/${id}`),
+  create: (data) => api.post("/stock-transfers", data),
+  cancel: (id, reason) =>
+    api.post(`/stock-transfers/${id}/cancel?reason=${reason}`),
+  getByProduct: (id) => api.get(`/stock-transfers/product/${id}`),
+  getByWarehouse: (id) => api.get(`/stock-transfers/warehouse/${id}`),
+};
+
+// Customer Ledger
+export const ledgerApi = {
+  getCustomerLedger: (customerId) => api.get(`/customers/${customerId}/ledger`),
+};
+
+// Supplier Price History
+export const priceHistoryApi = {
+  getBySupplier: (supplierId) =>
+    api.get(`/suppliers/${supplierId}/price-history`),
+  getBySupplierAndProduct: (supplierId, productId) =>
+    api.get(`/suppliers/${supplierId}/price-history/product/${productId}`),
+};
+
+// GST Report
+export const reportsApi = {
+  getGstReport: (start, end) =>
+    api.get(`/reports/gst?startDate=${start}&endDate=${end}`),
+};

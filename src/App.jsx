@@ -14,6 +14,9 @@ import UsersPage from "./pages/users/UsersPage";
 import DispatchPage from "./pages/dispatch/DispatchPage";
 import QualityPage from "./pages/quality/QualityPage";
 import ExpensesPage from "./pages/expenses/ExpensesPage";
+import StockTransferPage from "./pages/transfer/StockTransferPage";
+import CustomerLedgerPage from "./pages/ledger/CustomerLedgerPage";
+import GstReportPage from "./pages/reports/GstReportPage";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -50,6 +53,9 @@ export default function App() {
           <Route path="dispatch" element={<DispatchPage />} />
           <Route path="quality" element={<QualityPage />} />
           <Route path="expenses" element={<ExpensesPage />} />
+          <Route path="transfer" element={<StockTransferPage />} />
+          <Route path="ledger" element={<CustomerLedgerPage />} />
+          <Route path="reports/gst" element={<GstReportPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

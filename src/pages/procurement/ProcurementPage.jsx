@@ -10,6 +10,7 @@ import { Plus, Eye, Send, PackageCheck, XCircle, Users } from "lucide-react";
 import { PO_STATUS_COLORS } from "../../utils/constants";
 import usePagination from "../../hooks/usePagination";
 import Pagination from "../../components/common/Pagination";
+import { procurementApi, priceHistoryApi } from "../../api/endpoints";
 
 export default function ProcurementPage() {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
@@ -26,6 +27,9 @@ export default function ProcurementPage() {
   const [cancelId, setCancelId] = useState(null);
   const poPagination = usePagination(purchaseOrders, 10);
   const supplierPagination = usePagination(suppliers, 10);
+  const [priceHistory, setPriceHistory] = useState([]);
+  const [selectedSupplierId, setSelectedSupplierId] = useState("");
+  const priceHistoryPagination = usePagination(priceHistory, 10);
 
   const fetchData = async () => {
     try {
@@ -124,19 +128,93 @@ export default function ProcurementPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {["orders", "suppliers"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${
-              activeTab === tab
-                ? "bg-amber-600 text-white"
-                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {tab === "orders" ? "Purchase Orders" : "Suppliers"}
-          </button>
-        ))}
+        {activeTab === "priceHistory" && (
+          <div>
+            <div className="card mb-4">
+              <div className="flex gap-4 items-end">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Select Supplier
+                  </label>
+                  <select
+                    className="input-field"
+                    value={selectedSupplierId}
+                    onChange={(e) => setSelectedSupplierId(e.target.value)}
+                  >
+                    <option value="">Choose supplier...</option>
+                    {suppliers.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={async () => {
+                    if (!selectedSupplierId) return;
+                    const r =
+                      await priceHistoryApi.getBySupplier(selectedSupplierId);
+                    setPriceHistory(r.data.data);
+                  }}
+                  className="btn-primary"
+                >
+                  Load History
+                </button>
+              </div>
+            </div>
+
+            <div className="card p-0 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="table-header">Date</th>
+                      <th className="table-header">Product</th>
+                      <th className="table-header">Unit Price</th>
+                      <th className="table-header">PO Number</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priceHistoryPagination.paginatedData.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="text-center py-8 text-gray-400"
+                        >
+                          Select a supplier to view price history
+                        </td>
+                      </tr>
+                    ) : (
+                      priceHistoryPagination.paginatedData.map((h, i) => (
+                        <tr key={i} className="border-b hover:bg-gray-50">
+                          <td className="table-cell">{h.effectiveDate}</td>
+                          <td className="table-cell font-medium">
+                            {h.product?.name}
+                          </td>
+                          <td className="table-cell font-semibold text-amber-600">
+                            ₹{h.unitPrice?.toFixed(2)}
+                          </td>
+                          <td className="table-cell font-mono text-xs">
+                            {h.poNumber || "—"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <Pagination
+                currentPage={priceHistoryPagination.currentPage}
+                totalPages={priceHistoryPagination.totalPages}
+                totalItems={priceHistoryPagination.totalItems}
+                pageSize={priceHistoryPagination.pageSize}
+                onPageChange={priceHistoryPagination.goToPage}
+                hasNext={priceHistoryPagination.hasNext}
+                hasPrev={priceHistoryPagination.hasPrev}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Purchase Orders Tab */}
