@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { procurementApi } from "../../api/endpoints";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
