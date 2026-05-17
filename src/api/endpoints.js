@@ -161,10 +161,6 @@ export const priceHistoryApi = {
 };
 
 // GST Report
-export const reportsApi = {
-  getGstReport: (start, end) =>
-    api.get(`/reports/gst?startDate=${start}&endDate=${end}`),
-};
 
 export const reportsApi = {
   getGstReport: (start, end) =>
