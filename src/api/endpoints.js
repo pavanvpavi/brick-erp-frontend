@@ -165,3 +165,22 @@ export const reportsApi = {
   getGstReport: (start, end) =>
     api.get(`/reports/gst?startDate=${start}&endDate=${end}`),
 };
+
+export const reportsApi = {
+  getGstReport: (start, end) =>
+    api.get(`/reports/gst?startDate=${start}&endDate=${end}`),
+  getSalesReport: (start, end) =>
+    api.get(`/reports/sales?startDate=${start}&endDate=${end}`),
+  getCustomerSalesReport: (customerId, start, end) =>
+    api.get(
+      `/reports/sales/customer/${customerId}?startDate=${start}&endDate=${end}`,
+    ),
+  getProductSalesReport: (productId, start, end) =>
+    api.get(
+      `/reports/sales/product/${productId}?startDate=${start}&endDate=${end}`,
+    ),
+  getProductionReport: (start, end) =>
+    api.get(`/reports/production?startDate=${start}&endDate=${end}`),
+  getProfitLossReport: (start, end) =>
+    api.get(`/reports/profit-loss?startDate=${start}&endDate=${end}`),
+};

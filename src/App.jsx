@@ -17,6 +17,11 @@ import ExpensesPage from "./pages/expenses/ExpensesPage";
 import StockTransferPage from "./pages/transfer/StockTransferPage";
 import CustomerLedgerPage from "./pages/ledger/CustomerLedgerPage";
 import GstReportPage from "./pages/reports/GstReportPage";
+import SalesReportPage from "./pages/reports/SalesReportPage";
+import CustomerSalesReportPage from "./pages/reports/CustomerSalesReportPage";
+import ProductSalesReportPage from "./pages/reports/ProductSalesReportPage";
+import ProductionReportPage from "./pages/reports/ProductionReportPage";
+import ProfitLossReportPage from "./pages/reports/ProfitLossReportPage";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -56,6 +61,17 @@ export default function App() {
           <Route path="transfer" element={<StockTransferPage />} />
           <Route path="ledger" element={<CustomerLedgerPage />} />
           <Route path="reports/gst" element={<GstReportPage />} />
+          <Route path="reports/sales" element={<SalesReportPage />} />
+          <Route
+            path="reports/customer"
+            element={<CustomerSalesReportPage />}
+          />
+          <Route path="reports/product" element={<ProductSalesReportPage />} />
+          <Route path="reports/production" element={<ProductionReportPage />} />
+          <Route
+            path="reports/profit-loss"
+            element={<ProfitLossReportPage />}
+          />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

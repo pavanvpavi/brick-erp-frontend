@@ -18,6 +18,9 @@ import {
   ArrowLeftRight,
   BookOpen,
   BarChart2,
+  TrendingUp,
+  ShoppingBag,
+  Box,
 } from "lucide-react";
 
 const navItems = [
@@ -34,7 +37,12 @@ const navItems = [
   { to: "/dispatch", icon: Bike, label: "Dispatch" },
   { to: "/finance", icon: Receipt, label: "Finance" },
   { to: "/expenses", icon: DollarSign, label: "Expenses" },
-  { to: "/reports/gst", icon: BarChart2, label: "GST Report" },
+  { to: "/reports/sales", icon: BarChart2, label: "Sales Report" },
+  { to: "/reports/customer", icon: Users, label: "Customer Report" },
+  { to: "/reports/product", icon: Box, label: "Product Report" },
+  { to: "/reports/production", icon: Factory, label: "Production Report" },
+  { to: "/reports/profit-loss", icon: TrendingUp, label: "P&L Report" },
+  { to: "/reports/gst", icon: ShoppingBag, label: "GST Report" },
   { to: "/users", icon: UserCog, label: "Users" },
 ];
 
