@@ -51,20 +51,33 @@ export default function DispatchPage() {
     }
   };
 
+  const fetchEligibleOrders = async () => {
+    try {
+      const [ordersRes, deliveriesRes] = await Promise.all([
+        orderApi.getAll(),
+        dispatchApi.getAll(),
+      ]);
+      const deliveredOrderIds = new Set(
+        deliveriesRes.data.data
+          .filter((d) => d.status !== "FAILED")
+          .map((d) => d.salesOrderId),
+      );
+      const eligible = ordersRes.data.data.filter(
+        (o) =>
+          (o.status === "CONFIRMED" ||
+            o.status === "PROCESSING" ||
+            o.status === "SHIPPED") &&
+          !deliveredOrderIds.has(o.id),
+      );
+      setOrders(eligible);
+    } catch {
+      toast.error("Failed to load orders");
+    }
+  };
+
   useEffect(() => {
     fetchDeliveries();
-    orderApi
-      .getAll()
-      .then((r) =>
-        setOrders(
-          r.data.data.filter(
-            (o) =>
-              o.status === "CONFIRMED" ||
-              o.status === "PROCESSING" ||
-              o.status === "SHIPPED",
-          ),
-        ),
-      );
+    fetchEligibleOrders();
   }, []);
 
   const handleChange = (field) => (e) =>
@@ -92,6 +105,7 @@ export default function DispatchPage() {
         notes: "",
       });
       fetchDeliveries();
+      fetchEligibleOrders();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed");
     } finally {
