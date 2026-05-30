@@ -10,6 +10,9 @@ import { PO_STATUS_COLORS } from "../../utils/constants";
 import usePagination from "../../hooks/usePagination";
 import Pagination from "../../components/common/Pagination";
 import { procurementApi, priceHistoryApi } from "../../api/endpoints";
+import { pdfApi } from "../../api/endpoints";
+import { downloadPdf, openPdfInNewTab } from "../../utils/pdfDownload";
+import { Download, Printer } from "lucide-react";
 
 export default function ProcurementPage() {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
@@ -279,6 +282,42 @@ export default function ProcurementPage() {
                           >
                             <Eye size={16} />
                           </button>
+
+                          <button
+                            onClick={async () => {
+                              try {
+                                const res = await pdfApi.downloadPurchaseOrder(
+                                  po.id,
+                                );
+                                downloadPdf(res.data, `PO_${po.poNumber}.pdf`);
+                                toast.success("PO downloaded");
+                              } catch {
+                                toast.error("Failed to download PDF");
+                              }
+                            }}
+                            className="text-gray-400 hover:text-red-600"
+                            title="Download PDF"
+                          >
+                            <Download size={16} />
+                          </button>
+
+                          <button
+                            onClick={async () => {
+                              try {
+                                const res = await pdfApi.downloadPurchaseOrder(
+                                  po.id,
+                                );
+                                openPdfInNewTab(res.data);
+                              } catch {
+                                toast.error("Failed to open PDF");
+                              }
+                            }}
+                            className="text-gray-400 hover:text-purple-600"
+                            title="Print"
+                          >
+                            <Printer size={16} />
+                          </button>
+
                           {po.status === "DRAFT" && (
                             <button
                               onClick={() => handleSend(po.id)}
@@ -288,6 +327,7 @@ export default function ProcurementPage() {
                               <Send size={16} />
                             </button>
                           )}
+
                           {(po.status === "SENT" ||
                             po.status === "PARTIALLY_RECEIVED") && (
                             <button
@@ -304,6 +344,7 @@ export default function ProcurementPage() {
                               <PackageCheck size={16} />
                             </button>
                           )}
+
                           {(po.status === "DRAFT" || po.status === "SENT") && (
                             <button
                               onClick={() => setCancelId(po.id)}

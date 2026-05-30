@@ -3,11 +3,11 @@ import { financeApi, orderApi, pdfApi } from "../../api/endpoints";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Modal from "../../components/common/Modal";
 import toast from "react-hot-toast";
-import { Plus, Eye, Send, CreditCard, Download } from "lucide-react";
+import { Plus, Eye, Send, CreditCard, Download, Printer } from "lucide-react";
 import { INVOICE_STATUS_COLORS } from "../../utils/constants";
 import usePagination from "../../hooks/usePagination";
 import Pagination from "../../components/common/Pagination";
-import { downloadPdf } from "../../utils/pdfDownload";
+import { downloadPdf, openPdfInNewTab } from "../../utils/pdfDownload";
 
 export default function FinancePage() {
   const [invoices, setInvoices] = useState([]);
@@ -245,6 +245,22 @@ export default function FinancePage() {
                           title="Download PDF"
                         >
                           <Download size={16} />
+                        </button>
+
+                        {/* Print Invoice */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await pdfApi.downloadInvoice(inv.id);
+                              openPdfInNewTab(res.data);
+                            } catch {
+                              toast.error("Failed to open PDF");
+                            }
+                          }}
+                          className="text-gray-400 hover:text-purple-600"
+                          title="Print"
+                        >
+                          <Printer size={16} />
                         </button>
 
                         {/* Send Invoice */}
