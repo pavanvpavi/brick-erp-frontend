@@ -7,6 +7,9 @@ import { Plus, Eye, Send, CreditCard } from "lucide-react";
 import { INVOICE_STATUS_COLORS } from "../../utils/constants";
 import usePagination from "../../hooks/usePagination";
 import Pagination from "../../components/common/Pagination";
+import { pdfApi } from "../../api/endpoints";
+import { downloadPdf } from "../../utils/pdfDownload";
+import { Download } from "lucide-react";
 
 export default function FinancePage() {
   const [invoices, setInvoices] = useState([]);
@@ -248,6 +251,39 @@ export default function FinancePage() {
                             <CreditCard size={16} />
                           </button>
                         )}
+                      </div>
+                    </td>
+                    <td className="table-cell">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={async () => {
+                            const r = await financeApi.getById(inv.id);
+                            setViewInvoice(r.data.data);
+                          }}
+                          className="text-gray-400 hover:text-blue-600"
+                          title="View"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await pdfApi.downloadInvoice(inv.id);
+                              downloadPdf(
+                                res.data,
+                                `Invoice_${inv.invoiceNumber}.pdf`,
+                              );
+                              toast.success("Invoice downloaded");
+                            } catch {
+                              toast.error("Failed to download PDF");
+                            }
+                          }}
+                          className="text-gray-400 hover:text-red-600"
+                          title="Download PDF"
+                        >
+                          <Download size={16} />
+                        </button>
+                        {/* existing buttons for send, payment, cancel */}
                       </div>
                     </td>
                   </tr>

@@ -180,3 +180,13 @@ export const reportsApi = {
   getProfitLossReport: (start, end) =>
     api.get(`/reports/profit-loss?startDate=${start}&endDate=${end}`),
 };
+
+// PDF Downloads
+export const pdfApi = {
+  downloadInvoice: (id) =>
+    api.get(`/pdf/invoice/${id}`, { responseType: "blob" }),
+  downloadPurchaseOrder: (id) =>
+    api.get(`/pdf/purchase-order/${id}`, { responseType: "blob" }),
+  downloadDeliveryChallan: (id) =>
+    api.get(`/pdf/delivery/${id}`, { responseType: "blob" }),
+};

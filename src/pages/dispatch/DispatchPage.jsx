@@ -6,6 +6,9 @@ import Pagination from "../../components/common/Pagination";
 import usePagination from "../../hooks/usePagination";
 import toast from "react-hot-toast";
 import { Plus, Eye, Truck, CheckCircle, XCircle } from "lucide-react";
+import { pdfApi } from "../../api/endpoints";
+import { downloadPdf } from "../../utils/pdfDownload";
+import { Download } from "lucide-react";
 
 const STATUS_COLORS = {
   PENDING: "badge-yellow",
@@ -237,6 +240,26 @@ export default function DispatchPage() {
                           title="View"
                         >
                           <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await pdfApi.downloadDeliveryChallan(
+                                d.id,
+                              );
+                              downloadPdf(
+                                res.data,
+                                `Challan_${d.deliveryNumber}.pdf`,
+                              );
+                              toast.success("Challan downloaded");
+                            } catch {
+                              toast.error("Failed to download PDF");
+                            }
+                          }}
+                          className="text-gray-400 hover:text-red-600"
+                          title="Download Challan"
+                        >
+                          <Download size={16} />
                         </button>
                         {d.status === "PENDING" && (
                           <button
