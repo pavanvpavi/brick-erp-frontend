@@ -22,6 +22,30 @@ import {
   Clock,
   BarChart2,
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+
+const testData = [
+  { month: 'Jan', revenue: 1000 },
+  { month: 'Feb', revenue: 2000 },
+  { month: 'Mar', revenue: 1500 },
+];
+
+export default function DashboardPage() {
+  return (
+    <div>
+      <h1 style={{ padding: 20 }}>Dashboard Test</h1>
+      <div style={{ width: '100%', height: 300, padding: 20 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={testData}>
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Bar dataKey="revenue" fill="#d97706" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
 
 const StatCard = ({ icon: Icon, label, value, color, bg }) => (
   <div className="card flex items-center gap-4 hover:shadow-md transition-shadow">
