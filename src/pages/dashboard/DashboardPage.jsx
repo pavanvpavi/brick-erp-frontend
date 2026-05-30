@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { dashboardApi } from "../../api/endpoints";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import {
+  MonthlyRevenueChart,
+  MonthlyOrdersChart,
+  TopProductsChart,
+  StockLevelsChart,
+} from "../../components/common/Charts";
 import toast from "react-hot-toast";
 import {
   Package,
@@ -13,15 +19,12 @@ import {
   Factory,
   DollarSign,
   Truck,
-  CheckCircle,
   Clock,
+  BarChart2,
 } from "lucide-react";
 
-const StatCard = ({ icon: Icon, label, value, color, bg, subtext }) => (
-  <div
-    className="card flex items-center gap-4 hover:shadow-md
-    transition-shadow"
-  >
+const StatCard = ({ icon: Icon, label, value, color, bg }) => (
+  <div className="card flex items-center gap-4 hover:shadow-md transition-shadow">
     <div
       className={`w-12 h-12 rounded-xl flex items-center
       justify-center flex-shrink-0 ${bg}`}
@@ -33,7 +36,6 @@ const StatCard = ({ icon: Icon, label, value, color, bg, subtext }) => (
         {value ?? "—"}
       </p>
       <p className="text-sm text-gray-500 truncate">{label}</p>
-      {subtext && <p className="text-xs text-gray-400 mt-0.5">{subtext}</p>}
     </div>
   </div>
 );
@@ -60,15 +62,59 @@ export default function DashboardPage() {
   });
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-6">
+      <div>
         <h1 className="page-title mb-1">Dashboard</h1>
         <p className="text-sm text-gray-500">{today}</p>
       </div>
 
+      {/* Alerts */}
+      {(stats?.lowStockItems > 0 || stats?.unpaidInvoices > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {stats?.lowStockItems > 0 && (
+            <div
+              className="bg-red-50 border border-red-200 rounded-xl p-4
+              flex items-start gap-3"
+            >
+              <AlertTriangle
+                size={18}
+                className="text-red-500 mt-0.5 flex-shrink-0"
+              />
+              <div>
+                <p className="font-semibold text-red-800 text-sm">
+                  Low Stock Alert
+                </p>
+                <p className="text-red-600 text-xs mt-0.5">
+                  {stats.lowStockItems} product(s) below minimum stock level
+                </p>
+              </div>
+            </div>
+          )}
+          {stats?.unpaidInvoices > 0 && (
+            <div
+              className="bg-amber-50 border border-amber-200 rounded-xl p-4
+              flex items-start gap-3"
+            >
+              <Clock
+                size={18}
+                className="text-amber-500 mt-0.5 flex-shrink-0"
+              />
+              <div>
+                <p className="font-semibold text-amber-800 text-sm">
+                  Unpaid Invoices
+                </p>
+                <p className="text-amber-600 text-xs mt-0.5">
+                  {stats.unpaidInvoices} invoice(s) are pending payment
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Primary KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={Package}
           label="Total Products"
@@ -100,7 +146,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={Warehouse}
           label="Warehouses"
@@ -117,8 +163,8 @@ export default function DashboardPage() {
         />
         <StatCard
           icon={Factory}
-          label="Production Orders"
-          value={stats?.totalProductionOrders}
+          label="Active Production"
+          value={stats?.activeProductionOrders}
           color="text-teal-600"
           bg="bg-teal-50"
         />
@@ -131,83 +177,148 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {/* Orders Status */}
+      {/* Revenue + Orders Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
-          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart2 size={18} className="text-amber-600" />
+            <h2 className="font-semibold text-gray-700">
+              Monthly Revenue (Last 6 Months)
+            </h2>
+          </div>
+          <MonthlyRevenueChart data={stats?.monthlyRevenue} />
+        </div>
+
+        <div className="card">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={18} className="text-blue-600" />
+            <h2 className="font-semibold text-gray-700">
+              Monthly Orders (Last 6 Months)
+            </h2>
+          </div>
+          <MonthlyOrdersChart data={stats?.monthlyRevenue} />
+        </div>
+      </div>
+
+      {/* Top Products + Stock Levels */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card">
+          <div className="flex items-center gap-2 mb-4">
+            <Package size={18} className="text-green-600" />
+            <h2 className="font-semibold text-gray-700">
+              Top Products by Sales
+            </h2>
+          </div>
+          <TopProductsChart data={stats?.topProducts} />
+        </div>
+
+        <div className="card">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertTriangle size={18} className="text-red-500" />
+            <h2 className="font-semibold text-gray-700">Low Stock Levels</h2>
+          </div>
+          <StockLevelsChart data={stats?.stockLevels} />
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Sales Summary */}
+        <div className="card">
+          <h3
+            className="font-semibold text-gray-700 mb-4
+            flex items-center gap-2"
+          >
             <ShoppingCart size={16} className="text-purple-600" />
-            Orders Overview
+            Sales Summary
           </h3>
           <div className="space-y-3">
             {[
-              ["Confirmed", stats?.confirmedOrders, "bg-green-500"],
-              ["Pending", stats?.pendingOrders, "bg-yellow-500"],
-              ["Delivered", stats?.deliveredOrders, "bg-blue-500"],
-              ["Cancelled", stats?.cancelledOrders, "bg-red-500"],
-            ].map(([label, value, color]) => (
-              <div key={label} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${color}`} />
-                  <span className="text-sm text-gray-600">{label}</span>
-                </div>
+              ["Total Orders", stats?.totalOrders ?? 0],
+              ["Confirmed", stats?.confirmedOrders ?? 0],
+              ["Pending", stats?.pendingOrders ?? 0],
+              ["Completed Production", stats?.completedProductionOrders ?? 0],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="flex items-center justify-between
+                  py-1 border-b border-gray-100 last:border-0"
+              >
+                <span className="text-sm text-gray-600">{label}</span>
                 <span className="text-sm font-semibold text-gray-800">
-                  {value ?? 0}
+                  {value}
                 </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Invoice Status */}
+        {/* Finance Summary */}
         <div className="card">
-          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <h3
+            className="font-semibold text-gray-700 mb-4
+            flex items-center gap-2"
+          >
             <Receipt size={16} className="text-amber-600" />
-            Invoice Overview
+            Finance Summary
           </h3>
           <div className="space-y-3">
             {[
-              ["Paid", stats?.paidInvoices, "bg-green-500"],
-              ["Partially Paid", stats?.partiallyPaidInvoices, "bg-yellow-500"],
-              ["Sent", stats?.sentInvoices, "bg-blue-500"],
-              ["Overdue", stats?.overdueInvoices, "bg-red-500"],
-            ].map(([label, value, color]) => (
-              <div key={label} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${color}`} />
-                  <span className="text-sm text-gray-600">{label}</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-800">
-                  {value ?? 0}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Revenue */}
-        <div className="card">
-          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <TrendingUp size={16} className="text-green-600" />
-            Revenue Overview
-          </h3>
-          <div className="space-y-3">
-            {[
-              [
-                "Total Revenue",
-                `₹${stats?.totalRevenue?.toFixed(2) ?? "0.00"}`,
-              ],
+              ["Total Invoices", stats?.totalInvoices ?? 0],
+              ["Unpaid", stats?.unpaidInvoices ?? 0],
               ["Collected", `₹${stats?.totalCollected?.toFixed(2) ?? "0.00"}`],
               [
                 "Outstanding",
                 `₹${stats?.totalOutstanding?.toFixed(2) ?? "0.00"}`,
               ],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="flex items-center justify-between
+                  py-1 border-b border-gray-100 last:border-0"
+              >
+                <span className="text-sm text-gray-600">{label}</span>
+                <span className="text-sm font-semibold text-gray-800">
+                  {value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Revenue Summary */}
+        <div className="card">
+          <h3
+            className="font-semibold text-gray-700 mb-4
+            flex items-center gap-2"
+          >
+            <TrendingUp size={16} className="text-green-600" />
+            Revenue Summary
+          </h3>
+          <div className="space-y-3">
+            {[
+              [
+                "Total Revenue",
+                `₹${stats?.totalSalesAmount?.toFixed(2) ?? "0.00"}`,
+              ],
               [
                 "This Month",
-                `₹${stats?.revenueThisMonth?.toFixed(2) ?? "0.00"}`,
+                `₹${stats?.totalSalesThisMonth?.toFixed(2) ?? "0.00"}`,
+              ],
+              [
+                "Total Collected",
+                `₹${stats?.totalCollected?.toFixed(2) ?? "0.00"}`,
+              ],
+              [
+                "Outstanding",
+                `₹${stats?.totalOutstanding?.toFixed(2) ?? "0.00"}`,
               ],
             ].map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between">
+              <div
+                key={label}
+                className="flex items-center justify-between
+                  py-1 border-b border-gray-100 last:border-0"
+              >
                 <span className="text-sm text-gray-600">{label}</span>
                 <span className="text-sm font-semibold text-gray-800">
                   {value}
@@ -217,50 +328,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Alerts */}
-      {(stats?.lowStockCount > 0 || stats?.overdueInvoices > 0) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {stats?.lowStockCount > 0 && (
-            <div
-              className="bg-red-50 border border-red-200 rounded-xl p-4
-              flex items-start gap-3"
-            >
-              <AlertTriangle
-                size={18}
-                className="text-red-500 mt-0.5 flex-shrink-0"
-              />
-              <div>
-                <p className="font-semibold text-red-800 text-sm">
-                  Low Stock Alert
-                </p>
-                <p className="text-red-600 text-xs mt-0.5">
-                  {stats.lowStockCount} product(s) below minimum stock level
-                </p>
-              </div>
-            </div>
-          )}
-          {stats?.overdueInvoices > 0 && (
-            <div
-              className="bg-amber-50 border border-amber-200 rounded-xl p-4
-              flex items-start gap-3"
-            >
-              <Clock
-                size={18}
-                className="text-amber-500 mt-0.5 flex-shrink-0"
-              />
-              <div>
-                <p className="font-semibold text-amber-800 text-sm">
-                  Overdue Invoices
-                </p>
-                <p className="text-amber-600 text-xs mt-0.5">
-                  {stats.overdueInvoices} invoice(s) are past due date
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
