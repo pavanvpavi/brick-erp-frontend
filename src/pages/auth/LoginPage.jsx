@@ -67,6 +67,10 @@ export default function LoginPage() {
             />
           </div>
 
+          <p className="text-xs text-center text-gray-400 mt-2">
+            ⏳ First login may take up to 30 seconds while the server wakes up.
+          </p>
+
           <button
             type="submit"
             disabled={loading}
