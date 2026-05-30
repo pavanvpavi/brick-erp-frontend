@@ -215,16 +215,19 @@ export default function FinancePage() {
                     </td>
                     <td className="table-cell">
                       <div className="flex items-center gap-2">
+                        {/* View */}
                         <button
                           onClick={async () => {
                             const r = await financeApi.getById(inv.id);
                             setViewInvoice(r.data.data);
                           }}
                           className="text-gray-400 hover:text-blue-600"
-                          title="View"
+                          title="View Invoice"
                         >
                           <Eye size={16} />
                         </button>
+
+                        {/* Download PDF */}
                         <button
                           onClick={async () => {
                             try {
@@ -243,15 +246,19 @@ export default function FinancePage() {
                         >
                           <Download size={16} />
                         </button>
+
+                        {/* Send Invoice */}
                         {inv.status === "DRAFT" && (
                           <button
                             onClick={() => handleSend(inv.id)}
                             className="text-gray-400 hover:text-amber-600"
-                            title="Send"
+                            title="Send Invoice"
                           >
                             <Send size={16} />
                           </button>
                         )}
+
+                        {/* Record Payment */}
                         {["SENT", "PARTIALLY_PAID"].includes(inv.status) && (
                           <button
                             onClick={() => {
@@ -268,39 +275,6 @@ export default function FinancePage() {
                             <CreditCard size={16} />
                           </button>
                         )}
-                      </div>
-                    </td>
-                    <td className="table-cell">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={async () => {
-                            const r = await financeApi.getById(inv.id);
-                            setViewInvoice(r.data.data);
-                          }}
-                          className="text-gray-400 hover:text-blue-600"
-                          title="View"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={async () => {
-                            try {
-                              const res = await pdfApi.downloadInvoice(inv.id);
-                              downloadPdf(
-                                res.data,
-                                `Invoice_${inv.invoiceNumber}.pdf`,
-                              );
-                              toast.success("Invoice downloaded");
-                            } catch {
-                              toast.error("Failed to download PDF");
-                            }
-                          }}
-                          className="text-gray-400 hover:text-red-600"
-                          title="Download PDF"
-                        >
-                          <Download size={16} />
-                        </button>
-                        {/* existing buttons for send, payment, cancel */}
                       </div>
                     </td>
                   </tr>
