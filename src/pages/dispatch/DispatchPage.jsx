@@ -261,7 +261,7 @@ export default function DispatchPage() {
                         >
                           <Download size={16} />
                         </button>
-                        {/* <button
+                        <button
                           onClick={async () => {
                             try {
                               const res = await pdfApi.downloadDeliveryChallan(
@@ -276,7 +276,7 @@ export default function DispatchPage() {
                           title="Print"
                         >
                           <Printer size={16} />
-                        </button> */}
+                        </button>
                         {d.status === "PENDING" && (
                           <button
                             onClick={() => handleDispatch(d.id)}
