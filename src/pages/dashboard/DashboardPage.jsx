@@ -22,36 +22,11 @@ import {
   Clock,
   BarChart2,
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-
-const testData = [
-  { month: 'Jan', revenue: 1000 },
-  { month: 'Feb', revenue: 2000 },
-  { month: 'Mar', revenue: 1500 },
-];
-
-export default function DashboardPage() {
-  return (
-    <div>
-      <h1 style={{ padding: 20 }}>Dashboard Test</h1>
-      <div style={{ width: '100%', height: 300, padding: 20 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={testData}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Bar dataKey="revenue" fill="#d97706" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
 
 const StatCard = ({ icon: Icon, label, value, color, bg }) => (
   <div className="card flex items-center gap-4 hover:shadow-md transition-shadow">
     <div
-      className={`w-12 h-12 rounded-xl flex items-center
-      justify-center flex-shrink-0 ${bg}`}
+      className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${bg}`}
     >
       <Icon size={22} className={color} />
     </div>
@@ -97,10 +72,7 @@ export default function DashboardPage() {
       {(stats?.lowStockItems > 0 || stats?.unpaidInvoices > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {stats?.lowStockItems > 0 && (
-            <div
-              className="bg-red-50 border border-red-200 rounded-xl p-4
-              flex items-start gap-3"
-            >
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
               <AlertTriangle
                 size={18}
                 className="text-red-500 mt-0.5 flex-shrink-0"
@@ -116,10 +88,7 @@ export default function DashboardPage() {
             </div>
           )}
           {stats?.unpaidInvoices > 0 && (
-            <div
-              className="bg-amber-50 border border-amber-200 rounded-xl p-4
-              flex items-start gap-3"
-            >
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
               <Clock
                 size={18}
                 className="text-amber-500 mt-0.5 flex-shrink-0"
@@ -201,7 +170,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Revenue + Orders Charts */}
+      {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
@@ -212,7 +181,6 @@ export default function DashboardPage() {
           </div>
           <MonthlyRevenueChart data={stats?.monthlyRevenue} />
         </div>
-
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={18} className="text-blue-600" />
@@ -224,7 +192,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Top Products + Stock Levels */}
+      {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
@@ -235,7 +203,6 @@ export default function DashboardPage() {
           </div>
           <TopProductsChart data={stats?.topProducts} />
         </div>
-
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle size={18} className="text-red-500" />
@@ -249,10 +216,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Sales Summary */}
         <div className="card">
-          <h3
-            className="font-semibold text-gray-700 mb-4
-            flex items-center gap-2"
-          >
+          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <ShoppingCart size={16} className="text-purple-600" />
             Sales Summary
           </h3>
@@ -265,8 +229,7 @@ export default function DashboardPage() {
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="flex items-center justify-between
-                  py-1 border-b border-gray-100 last:border-0"
+                className="flex items-center justify-between py-1 border-b border-gray-100 last:border-0"
               >
                 <span className="text-sm text-gray-600">{label}</span>
                 <span className="text-sm font-semibold text-gray-800">
@@ -279,10 +242,7 @@ export default function DashboardPage() {
 
         {/* Finance Summary */}
         <div className="card">
-          <h3
-            className="font-semibold text-gray-700 mb-4
-            flex items-center gap-2"
-          >
+          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <Receipt size={16} className="text-amber-600" />
             Finance Summary
           </h3>
@@ -290,16 +250,18 @@ export default function DashboardPage() {
             {[
               ["Total Invoices", stats?.totalInvoices ?? 0],
               ["Unpaid", stats?.unpaidInvoices ?? 0],
-              ["Collected", `₹${stats?.totalCollected?.toFixed(2) ?? "0.00"}`],
+              [
+                "Collected",
+                `₹${Number(stats?.totalCollected ?? 0).toFixed(2)}`,
+              ],
               [
                 "Outstanding",
-                `₹${stats?.totalOutstanding?.toFixed(2) ?? "0.00"}`,
+                `₹${Number(stats?.totalOutstanding ?? 0).toFixed(2)}`,
               ],
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="flex items-center justify-between
-                  py-1 border-b border-gray-100 last:border-0"
+                className="flex items-center justify-between py-1 border-b border-gray-100 last:border-0"
               >
                 <span className="text-sm text-gray-600">{label}</span>
                 <span className="text-sm font-semibold text-gray-800">
@@ -312,10 +274,7 @@ export default function DashboardPage() {
 
         {/* Revenue Summary */}
         <div className="card">
-          <h3
-            className="font-semibold text-gray-700 mb-4
-            flex items-center gap-2"
-          >
+          <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <TrendingUp size={16} className="text-green-600" />
             Revenue Summary
           </h3>
@@ -323,25 +282,24 @@ export default function DashboardPage() {
             {[
               [
                 "Total Revenue",
-                `₹${stats?.totalSalesAmount?.toFixed(2) ?? "0.00"}`,
+                `₹${Number(stats?.totalSalesAmount ?? 0).toFixed(2)}`,
               ],
               [
                 "This Month",
-                `₹${stats?.totalSalesThisMonth?.toFixed(2) ?? "0.00"}`,
+                `₹${Number(stats?.totalSalesThisMonth ?? 0).toFixed(2)}`,
               ],
               [
                 "Total Collected",
-                `₹${stats?.totalCollected?.toFixed(2) ?? "0.00"}`,
+                `₹${Number(stats?.totalCollected ?? 0).toFixed(2)}`,
               ],
               [
                 "Outstanding",
-                `₹${stats?.totalOutstanding?.toFixed(2) ?? "0.00"}`,
+                `₹${Number(stats?.totalOutstanding ?? 0).toFixed(2)}`,
               ],
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="flex items-center justify-between
-                  py-1 border-b border-gray-100 last:border-0"
+                className="flex items-center justify-between py-1 border-b border-gray-100 last:border-0"
               >
                 <span className="text-sm text-gray-600">{label}</span>
                 <span className="text-sm font-semibold text-gray-800">
