@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { financeApi, orderApi } from "../../api/endpoints";
+import { financeApi, orderApi, pdfApi } from "../../api/endpoints";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Modal from "../../components/common/Modal";
 import toast from "react-hot-toast";
-import { Plus, Eye, Send, CreditCard } from "lucide-react";
+import { Plus, Eye, Send, CreditCard, Download } from "lucide-react";
 import { INVOICE_STATUS_COLORS } from "../../utils/constants";
 import usePagination from "../../hooks/usePagination";
 import Pagination from "../../components/common/Pagination";
-import { pdfApi } from "../../api/endpoints";
 import { downloadPdf } from "../../utils/pdfDownload";
-import { Download } from "lucide-react";
 
 export default function FinancePage() {
   const [invoices, setInvoices] = useState([]);
@@ -223,8 +221,27 @@ export default function FinancePage() {
                             setViewInvoice(r.data.data);
                           }}
                           className="text-gray-400 hover:text-blue-600"
+                          title="View"
                         >
                           <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await pdfApi.downloadInvoice(inv.id);
+                              downloadPdf(
+                                res.data,
+                                `Invoice_${inv.invoiceNumber}.pdf`,
+                              );
+                              toast.success("Invoice downloaded");
+                            } catch {
+                              toast.error("Failed to download PDF");
+                            }
+                          }}
+                          className="text-gray-400 hover:text-red-600"
+                          title="Download PDF"
+                        >
+                          <Download size={16} />
                         </button>
                         {inv.status === "DRAFT" && (
                           <button
